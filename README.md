@@ -37,7 +37,7 @@ import rest.holidays.HolidaysParams
 fun main() = runBlocking {
     HolidaysClient(apiKey = "YOUR_API_KEY").use { client ->
         val holidays = client.getHolidays(HolidaysParams(country = "US", year = 2024))
-        holidays.forEach { println("${it.date} — ${it.name}") }
+        holidays.forEach { println("${it.date} — ${it.name["en"]}") }
     }
 }
 ```
@@ -134,9 +134,23 @@ val languages = client.getLanguages()
 All responses deserialize into Kotlin `data class` objects.
 
 ```kotlin
+data class HolidayDay(
+    val actual: String,    // day name, e.g. "Thursday"
+    val observed: String,  // observed day name (may differ for substitute holidays)
+)
+
 data class Holiday(
-    val name: String, val date: String, val type: String,
-    val country: String, val region: String?, val religion: String?, val language: String?
+    val countryCode: String,        // ISO 3166 alpha-2, e.g. "DE"
+    val countryName: String,        // e.g. "Germany"
+    val date: String,               // ISO 8601, e.g. "2026-01-01"
+    val name: Map<String, String>,  // language code → name, e.g. name["en"] = "New Year's Day"
+    val isNational: Boolean,
+    val isReligious: Boolean,
+    val isLocal: Boolean,
+    val isEstimate: Boolean,
+    val day: HolidayDay,
+    val religion: String,           // e.g. "Christianity" or ""
+    val regions: List<String>,      // subdivision codes, e.g. ["BW", "BY"]
 )
 
 data class Country(
