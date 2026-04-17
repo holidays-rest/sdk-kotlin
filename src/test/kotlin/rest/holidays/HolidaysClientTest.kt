@@ -32,10 +32,10 @@ class HolidaysClientTest {
 
     @Test
     fun `getHolidays returns parsed holiday list`() = runTest {
-        server.enqueue(MockResponse.Builder()
-            .code(200)
-            .addHeader("Content-Type", "application/json")
-            .body("""
+        server.enqueue(MockResponse()
+            .setResponseCode(200)
+            .setHeader("Content-Type", "application/json")
+            .setBody("""
                 [
                     {
                         "country_code": "DE", "country_name": "Germany",
@@ -45,8 +45,7 @@ class HolidaysClientTest {
                         "religion": "", "regions": []
                     }
                 ]
-            """.trimIndent())
-            .build())
+            """.trimIndent()))
 
         val holidays = client.getHolidays(HolidaysParams(country = "DE", year = 2026))
 
@@ -58,7 +57,7 @@ class HolidaysClientTest {
 
     @Test
     fun `getHolidays sends correct query parameters`() = runTest {
-        server.enqueue(MockResponse.Builder().code(200).body("[]").build())
+        server.enqueue(MockResponse().setResponseCode(200).setBody("[]"))
 
         client.getHolidays(HolidaysParams(
             country = "US",
@@ -81,7 +80,7 @@ class HolidaysClientTest {
 
     @Test
     fun `getHolidays sends Authorization header`() = runTest {
-        server.enqueue(MockResponse.Builder().code(200).body("[]").build())
+        server.enqueue(MockResponse().setResponseCode(200).setBody("[]"))
 
         client.getHolidays(HolidaysParams(country = "US", year = 2024))
 
@@ -91,11 +90,10 @@ class HolidaysClientTest {
 
     @Test
     fun `getHolidays throws HolidaysApiException on 401`() = runTest {
-        server.enqueue(MockResponse.Builder()
-            .code(401)
-            .addHeader("Content-Type", "application/json")
-            .body("""{"message":"Invalid API key"}""")
-            .build())
+        server.enqueue(MockResponse()
+            .setResponseCode(401)
+            .setHeader("Content-Type", "application/json")
+            .setBody("""{"message":"Invalid API key"}"""))
 
         val ex = assertFailsWith<HolidaysApiException> {
             client.getHolidays(HolidaysParams(country = "US", year = 2024))
@@ -105,10 +103,9 @@ class HolidaysClientTest {
 
     @Test
     fun `getHolidays throws HolidaysApiException on 500`() = runTest {
-        server.enqueue(MockResponse.Builder()
-            .code(500)
-            .body("""{"message":"Internal Server Error"}""")
-            .build())
+        server.enqueue(MockResponse()
+            .setResponseCode(500)
+            .setBody("""{"message":"Internal Server Error"}"""))
 
         val ex = assertFailsWith<HolidaysApiException> {
             client.getHolidays(HolidaysParams(country = "US", year = 2024))
@@ -125,7 +122,7 @@ class HolidaysClientTest {
 
     @Test
     fun `getHolidays handles multiple regions and types`() = runTest {
-        server.enqueue(MockResponse.Builder().code(200).body("[]").build())
+        server.enqueue(MockResponse().setResponseCode(200).setBody("[]"))
 
         client.getHolidays(HolidaysParams(
             country = "US",
@@ -144,10 +141,9 @@ class HolidaysClientTest {
 
     @Test
     fun `getCountries returns parsed country list`() = runTest {
-        server.enqueue(MockResponse.Builder()
-            .code(200)
-            .body("""[{"name":"Germany","alpha2":"DE","subdivisions":[]}]""")
-            .build())
+        server.enqueue(MockResponse()
+            .setResponseCode(200)
+            .setBody("""[{"name":"Germany","alpha2":"DE","subdivisions":[]}]"""))
 
         val countries = client.getCountries()
 
@@ -160,9 +156,9 @@ class HolidaysClientTest {
 
     @Test
     fun `getCountry returns country with subdivisions`() = runTest {
-        server.enqueue(MockResponse.Builder()
-            .code(200)
-            .body("""
+        server.enqueue(MockResponse()
+            .setResponseCode(200)
+            .setBody("""
                 {
                     "name": "United States",
                     "alpha2": "US",
@@ -171,8 +167,7 @@ class HolidaysClientTest {
                         {"code": "US-NY", "name": "New York"}
                     ]
                 }
-            """.trimIndent())
-            .build())
+            """.trimIndent()))
 
         val country = client.getCountry("US")
 
@@ -183,10 +178,9 @@ class HolidaysClientTest {
 
     @Test
     fun `getCountry includes country code in URL path`() = runTest {
-        server.enqueue(MockResponse.Builder()
-            .code(200)
-            .body("""{"name":"Germany","alpha2":"DE","subdivisions":[]}""")
-            .build())
+        server.enqueue(MockResponse()
+            .setResponseCode(200)
+            .setBody("""{"name":"Germany","alpha2":"DE","subdivisions":[]}"""))
 
         client.getCountry("DE")
 
@@ -203,10 +197,9 @@ class HolidaysClientTest {
 
     @Test
     fun `getCountry throws HolidaysApiException on 404`() = runTest {
-        server.enqueue(MockResponse.Builder()
-            .code(404)
-            .body("""{"message":"Country not found"}""")
-            .build())
+        server.enqueue(MockResponse()
+            .setResponseCode(404)
+            .setBody("""{"message":"Country not found"}"""))
 
         val ex = assertFailsWith<HolidaysApiException> {
             client.getCountry("XX")
@@ -218,10 +211,9 @@ class HolidaysClientTest {
 
     @Test
     fun `getLanguages returns parsed language list`() = runTest {
-        server.enqueue(MockResponse.Builder()
-            .code(200)
-            .body("""[{"code":"en","name":"English"},{"code":"de","name":"German"}]""")
-            .build())
+        server.enqueue(MockResponse()
+            .setResponseCode(200)
+            .setBody("""[{"code":"en","name":"English"},{"code":"de","name":"German"}]"""))
 
         val languages = client.getLanguages()
 
