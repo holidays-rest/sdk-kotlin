@@ -1,6 +1,8 @@
 # holidays.rest Kotlin SDK
 
-Official Kotlin SDK for the [holidays.rest](https://holidays.rest) API.
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/d1624e22507b4018a9573d8cb71b2242)](https://app.codacy.com/gh/holidays-rest/sdk-kotlin/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+
+Official Kotlin SDK for the [holidays.rest](https://www.holidays.rest) API.
 
 ## Requirements
 
